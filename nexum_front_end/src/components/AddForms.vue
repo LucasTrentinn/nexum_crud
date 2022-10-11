@@ -41,14 +41,7 @@
         </label>
         <label id="CPF" class="block basis-1/5 m-5">
           CPF
-          <input
-            type="text"
-            id="inputCPF"
-            ref="cpf"
-            class="block border-2 h-10 w-full text-md"
-            v-mask="'###.###.###-##'"
-            v-model="pessoa.cpf"
-          />
+          <input type="text" id="inputCPF" ref="cpf" class="block border-2 h-10 w-full text-md" v-mask="'###.###.###-##'" v-model="pessoa.cpf" />
         </label>
         <label id="CNPJ" class="hidden basis-1/5 m-5">
           CNPJ
@@ -179,7 +172,7 @@ async function validarCPF(inputCPF) {
   if (inputCPF) {
     var CPF = inputCPF.replace(/[^\d]+/g, "");
 
-    if (CPF == "00000000000") {
+    if (CPF == "00000000000" || CPF == "") {
       let validar = document.getElementById("inputCPF");
       await validar.setCustomValidity("CPF inválido.");
       await validar.reportValidity();
@@ -226,6 +219,7 @@ async function validarCNPJ(inputCNPJ) {
   inputCNPJ = inputCNPJ.replace(/[^\d]+/g, "");
 
   if (
+    inputCNPJ == "" ||
     inputCNPJ == "00000000000000" ||
     inputCNPJ == "11111111111111" ||
     inputCNPJ == "22222222222222" ||
@@ -243,13 +237,12 @@ async function validarCNPJ(inputCNPJ) {
     return;
   }
 
-
   let tamanho = inputCNPJ.length - 2;
   let numeros = inputCNPJ.substring(0, tamanho);
   let digitos = inputCNPJ.substring(tamanho);
   let soma = 0;
   let pos = tamanho - 7;
-  let i
+  let i;
 
   for (i = tamanho; i >= 1; i--) {
     soma += numeros.charAt(tamanho - i) * pos--;
@@ -261,7 +254,7 @@ async function validarCNPJ(inputCNPJ) {
     let validar = document.getElementById("inputCNPJ");
     await validar.setCustomValidity("CNPJ inválido.");
     await validar.reportValidity();
-    return
+    return;
   }
 
   tamanho = tamanho + 1;
@@ -275,12 +268,12 @@ async function validarCNPJ(inputCNPJ) {
   }
 
   resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
-  
+
   if (resultado != digitos.charAt(1)) {
     let validar = document.getElementById("inputCNPJ");
     await validar.setCustomValidity("CNPJ inválido.");
     await validar.reportValidity();
-  };
+  }
 
   return document.getElementById("inputCNPJ").setCustomValidity("");
 }
